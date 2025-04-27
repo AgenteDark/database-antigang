@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: database-antigang
+    env: python
+    buildCommand: ""
+    startCommand: python app.py
+    plan: free

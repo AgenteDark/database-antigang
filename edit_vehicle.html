@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Modifica Veicolo - Database Antigang{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
+    <h2>Modifica Veicolo</h2>
+
+    <form method="POST" action="/edit_vehicle/{{ id }}" style="display: flex; flex-direction: column; gap: 10px; width: 300px;">
+        <input type="text" name="proprietario" value="{{ veicolo[0] }}" placeholder="Proprietario" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="modello" value="{{ veicolo[1] }}" placeholder="Modello" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="targa" value="{{ veicolo[2] }}" placeholder="Targa" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <textarea name="note" placeholder="Note" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; height: 100px;">{{ veicolo[3] }}</textarea>
+        <button type="submit" style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-weight: bold;">Salva Modifiche</button>
+    </form>
+</div>
+{% endblock %}

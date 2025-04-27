@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Database Antigang{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; padding: 30px;">
+    
+    <!-- Logo -->
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo CID" style="width: 150px; margin-bottom: 20px;">
+
+    <!-- Titolo -->
+    <h1 style="font-size: 32px; font-weight: bold; color: #000; text-align: center;">
+        Benvenuto nel database AntiGang del CID
+    </h1>
+
+    <!-- Nome utente -->
+    <h2 style="margin-top: 10px; font-size: 24px; font-weight: normal; color: #333;">
+        👮‍♂️ Operatore: <strong>{{ session['username'] }}</strong>
+    </h2>
+
+    <!-- Statistiche -->
+    <div style="margin-top: 30px; background-color: #f8f9fa; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;">
+        <h4 style="margin-bottom: 10px;">📋 Totale soggetti registrati:</h4>
+        <p style="font-size: 24px; font-weight: bold;">{{ totale_soggetti }}</p>
+    </div>
+
+    <!-- Pulsanti -->
+    <div style="margin-top: 40px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+        <a href="{{ url_for('search') }}" style="background-color: #007bff; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 18px;">
+            🔎 Cerca Soggetti
+        </a>
+        <a href="{{ url_for('add') }}" style="background-color: #28a745; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 18px;">
+            ➕ Aggiungi Soggetto
+        </a>
+        <a href="{{ url_for('logout') }}" style="background-color: #dc3545; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 18px;">
+            🚪 Logout
+        </a>
+    </div>
+
+</div>
+{% endblock %}
