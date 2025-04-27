@@ -120,45 +120,21 @@ def dashboard():
     conn.close()
     return render_template('dashboard.html', totale_soggetti=totale_soggetti)
 
-@app.route('/search', methods=['GET'])
+@app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
-    nome = request.args.get('nome', '')
-    cognome = request.args.get('cognome', '')
-    citta = request.args.get('citta', '')
-    gang = request.args.get('gang', '')
-    reati = request.args.get('reati', '')
-    risultati = []
+    results = []
+    if request.method == 'POST':
+        search_query = request.form['search_query']
 
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute("SELECT * FROM soggetti WHERE nome LIKE ? OR cognome LIKE ? OR gang LIKE ?", 
+                  (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%'))
+        results = c.fetchall()
+        conn.close()
 
-    query = "SELECT id, nome, cognome, data_nascita, citta, telefono, gang, reati, immagine FROM soggetti WHERE 1=1"
-    params = []
-
-    if nome:
-        query += " AND nome LIKE ?"
-        params.append(f"%{nome}%")
-    if cognome:
-        query += " AND cognome LIKE ?"
-        params.append(f"%{cognome}%")
-    if citta:
-        query += " AND citta LIKE ?"
-        params.append(f"%{citta}%")
-    if gang:
-        query += " AND gang LIKE ?"
-        params.append(f"%{gang}%")
-    if reati:
-        query += " AND reati LIKE ?"
-        params.append(f"%{reati}%")
-
-    c.execute(query, params)
-    risultati = c.fetchall()
-    conn.close()
-
-    richiesta_ricerca = any([nome, cognome, citta, gang, reati])
-
-    return render_template('search.html', risultati=risultati, richiesta_ricerca=richiesta_ricerca)
+    return render_template('search.html', results=results)
 
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -185,12 +161,10 @@ def add():
 
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
-
         c.execute('''
             INSERT INTO soggetti (nome, cognome, data_nascita, citta, telefono, gang, reati, immagine, data_registrazione)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (nome, cognome, data_nascita, citta, telefono, gang, reati, filename, data_registrazione))
-
         conn.commit()
         conn.close()
 
@@ -290,23 +264,6 @@ def delete_vehicle(id):
     conn.commit()
     conn.close()
     return redirect(url_for('search_vehicle'))
-
-    @app.route('/search', methods=['GET', 'POST'])
-@login_required
-def search():
-    results = []
-    if request.method == 'POST':
-        search_query = request.form['search_query']
-
-        conn = sqlite3.connect('database.db')
-        c = conn.cursor()
-        c.execute("SELECT * FROM soggetti WHERE nome LIKE ? OR cognome LIKE ? OR gang LIKE ?", 
-                  (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%'))
-        results = c.fetchall()
-        conn.close()
-
-    return render_template('search.html', results=results)
-
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
