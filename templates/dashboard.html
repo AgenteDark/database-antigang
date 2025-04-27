@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
+{% block title %}Dashboard - Database Antigang{% endblock %}
+
 {% block content %}
-<div style="padding: 30px; text-align: center;">
-    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo CID" style="width: 150px; margin-bottom: 20px;">
-    <h1>Benvenuto nel database AntiGang del CID, {{ session.username }}!</h1>
+<div style="text-align: center; padding: 40px;">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" style="width: 150px; margin-bottom: 20px;">
+    <h1>Benvenuto nel database AntiGang del CID, {{ session['username'] }}! 👮‍♂️</h1>
 
-    <div style="margin-top: 40px;">
-        <div style="margin-bottom: 30px;">
-            <h3>Totale Cittadini Registrati:</h3>
-            <p style="font-size: 24px;">{{ totale_soggetti }}</p>
-        </div>
+    <p style="margin-top: 20px;">Totale soggetti registrati: <strong>{{ totale_soggetti }}</strong></p>
 
-        {% if utenti_in_attesa > 0 and session['ruolo'] == 'admin' %}
-        <div style="margin-bottom: 30px; background-color: #ffcccb; padding: 20px; border-radius: 10px;">
-            <h3>⚠️ Utenti in attesa di approvazione:</h3>
-            <p style="font-size: 24px;">{{ utenti_in_attesa }}</p>
-            <a href="{{ url_for('manage_users') }}" style="background-color: #007bff; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px;">Gestisci Utenti</a>
-        </div>
-        {% endif %}
+    {% if session['ruolo'] == 'admin' %}
+        <p>Utenti in attesa di approvazione: <strong>{{ utenti_in_attesa }}</strong></p>
+        <a href="{{ url_for('manage_users') }}" style="padding: 10px 20px; background-color: orange; color: white; text-decoration: none; border-radius: 5px;">Gestisci Registrazioni</a>
+    {% endif %}
+
+    <div style="margin-top: 30px;">
+        <a href="{{ url_for('search') }}" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin: 10px;">🔎 Cerca Soggetti</a>
+        <a href="{{ url_for('add') }}" style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; margin: 10px;">➕ Aggiungi Soggetto</a>
+        <a href="{{ url_for('logout') }}" style="padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px; margin: 10px;">🚪 Logout</a>
     </div>
 </div>
 {% endblock %}
