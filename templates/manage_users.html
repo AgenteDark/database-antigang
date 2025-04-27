@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h2>Gestione Utenti</h2>
+    <table style="width: 80%; margin: auto; border-collapse: collapse;">
+        <thead style="background-color: #007bff; color: white;">
+            <tr>
+                <th>Username</th>
+                <th>Data Registrazione</th>
+                <th>Stato</th>
+                <th>Ruolo</th>
+                <th>Azioni</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for id, username, data_registrazione, approvato, ruolo in utenti %}
+            <tr style="border-bottom: 1px solid #ccc;">
+                <td>{{ username }}</td>
+                <td>{{ data_registrazione }}</td>
+                <td>{{ '✅ Approvato' if approvato else '⏳ In attesa' }}</td>
+                <td>{{ ruolo }}</td>
+                <td>
+                    {% if not approvato %}
+                        <a href="{{ url_for('approve_user', user_id=id) }}" style="color: green;">Approva</a> |
+                    {% endif %}
+                    {% if ruolo == 'user' %}
+                        <a href="{{ url_for('promote_user', user_id=id) }}" style="color: orange;">Promuovi Admin</a> |
+                    {% else %}
+                        <a href="{{ url_for('demote_user', user_id=id) }}" style="color: blue;">Rimuovi Admin</a> |
+                    {% endif %}
+                    <a href="{{ url_for('delete_user', user_id=id) }}" style="color: red;">Elimina</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

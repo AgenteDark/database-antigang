@@ -1,41 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard - Database Antigang{% endblock %}
-
 {% block content %}
-<div style="display: flex; flex-direction: column; align-items: center; padding: 30px;">
-    
-    <!-- Logo -->
+<div style="padding: 30px; text-align: center;">
     <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo CID" style="width: 150px; margin-bottom: 20px;">
+    <h1>Benvenuto nel database AntiGang del CID, {{ session.username }}!</h1>
 
-    <!-- Titolo -->
-    <h1 style="font-size: 32px; font-weight: bold; color: #000; text-align: center;">
-        Benvenuto nel database AntiGang del CID
-    </h1>
+    <div style="margin-top: 40px;">
+        <div style="margin-bottom: 30px;">
+            <h3>Totale Cittadini Registrati:</h3>
+            <p style="font-size: 24px;">{{ totale_soggetti }}</p>
+        </div>
 
-    <!-- Nome utente -->
-    <h2 style="margin-top: 10px; font-size: 24px; font-weight: normal; color: #333;">
-        👮‍♂️ Operatore: <strong>{{ session['username'] }}</strong>
-    </h2>
-
-    <!-- Statistiche -->
-    <div style="margin-top: 30px; background-color: #f8f9fa; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;">
-        <h4 style="margin-bottom: 10px;">📋 Totale soggetti registrati:</h4>
-        <p style="font-size: 24px; font-weight: bold;">{{ totale_soggetti }}</p>
+        {% if utenti_in_attesa > 0 and session['ruolo'] == 'admin' %}
+        <div style="margin-bottom: 30px; background-color: #ffcccb; padding: 20px; border-radius: 10px;">
+            <h3>⚠️ Utenti in attesa di approvazione:</h3>
+            <p style="font-size: 24px;">{{ utenti_in_attesa }}</p>
+            <a href="{{ url_for('manage_users') }}" style="background-color: #007bff; padding: 10px 20px; color: white; text-decoration: none; border-radius: 5px;">Gestisci Utenti</a>
+        </div>
+        {% endif %}
     </div>
-
-    <!-- Pulsanti -->
-    <div style="margin-top: 40px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-        <a href="{{ url_for('search') }}" style="background-color: #007bff; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 18px;">
-            🔎 Cerca Soggetti
-        </a>
-        <a href="{{ url_for('add') }}" style="background-color: #28a745; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 18px;">
-            ➕ Aggiungi Soggetto
-        </a>
-        <a href="{{ url_for('logout') }}" style="background-color: #dc3545; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 18px;">
-            🚪 Logout
-        </a>
-    </div>
-
 </div>
 {% endblock %}
