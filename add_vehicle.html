@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Aggiungi Veicolo - Database Antigang{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
+    <h2>Aggiungi Nuovo Veicolo</h2>
+
+    <form method="POST" action="/add_vehicle" style="display: flex; flex-direction: column; gap: 10px; width: 300px;">
+
+        <input type="text" name="proprietario" placeholder="Dati proprietario" required 
+               style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+
+        <input type="text" name="modello" placeholder="Modello" required 
+               style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+
+        <input type="text" name="targa" placeholder="Targa" required 
+               style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+
+        <textarea name="note" placeholder="Note" 
+                  style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; height: 100px;"></textarea>
+
+        <button type="submit" style="padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; font-weight: bold;">Salva Veicolo</button>
+
+    </form>
+</div>
+{% endblock %}

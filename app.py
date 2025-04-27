@@ -1,4 +1,4 @@
-# app.py aggiornato
+# app.py aggiornato e pronto per Render
 from flask import Flask, render_template, request, redirect, url_for, session, make_response
 import sqlite3
 import os
@@ -103,7 +103,7 @@ def dashboard():
     conn.close()
     return render_template('dashboard.html', totale_soggetti=totale_soggetti)
 
-# 🔥 Ricerca soggetti con FILTRI AVANZATI
+# 🔥 Ricerca soggetti con filtri avanzati
 @app.route('/search', methods=['GET'])
 @login_required
 def search():
@@ -144,7 +144,7 @@ def search():
 
     return render_template('search.html', risultati=risultati, richiesta_ricerca=richiesta_ricerca)
 
-# 🔥 Aggiungi nuovo soggetto
+# 🔥 Aggiungi soggetto
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
@@ -280,9 +280,7 @@ def delete_vehicle(id):
     conn.close()
     return redirect(url_for('search_vehicle'))
 
-import os
-
+# 🔥 Avvio server
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Legge la porta assegnata da Render
-    app.run(host='0.0.0.0', port=port, debug=True)  # Avvia Flask su 0.0.0.0
-
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
