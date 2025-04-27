@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Database Antigang{% endblock %}
+
+{% block content %}
+<!-- CONTENUTO PRINCIPALE (dopo sidebar) -->
+<!-- Wrapper generale -->
+<div style="min-height: 75vh; background-color: #f3f4f6; display: flex; justify-content: center; align-items: center;">
+
+    <!-- Card -->
+    <div style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); width: 360px; text-align: center;">
+  
+      <!-- Logo -->
+      <img src="/static/CIDlogo.png" alt="Logo" style="width: 120px; margin-bottom: 20px;">
+  
+      <!-- Titolo -->
+      <h2 style="font-weight: bold; margin-bottom: 25px;">Accesso Operatori</h2>
+  
+      <!-- Form -->
+      <form method="POST" action="/login" style="display: flex; flex-direction: column; gap: 12px;">
+        <input type="text" name="username" placeholder="Username" required style="padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
+        <input type="password" name="password" placeholder="Password" required style="padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
+        <button type="submit" style="padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-weight: bold;">Login</button>
+      </form>
+  
+      <!-- Link Registrazione -->
+      <p style="margin-top: 20px;">
+        <a href="/register" style="color: green; text-decoration: none;">Non hai un account? Registrati!</a>
+      </p>
+  
+    </div>
+  
+  </div>
+  
+
+
+{% endblock %}
+

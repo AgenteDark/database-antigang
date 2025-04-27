@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Modifica Profilo - Database Antigang{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
+    <h2>Modifica Profilo</h2>
+    <form method="POST" action="/edit/{{ id }}" style="display: flex; flex-direction: column; width: 300px;">
+        <input type="text" name="nome" value="{{ soggetto[0] }}" required style="margin-bottom: 10px; padding: 10px;">
+        <input type="text" name="cognome" value="{{ soggetto[1] }}" required style="margin-bottom: 10px; padding: 10px;">
+        <input type="date" name="data_nascita" value="{{ soggetto[2] }}" required style="margin-bottom: 10px; padding: 10px;">
+        <input type="text" name="citta" value="{{ soggetto[3] }}" required style="margin-bottom: 10px; padding: 10px;">
+        <input type="text" name="telefono" value="{{ soggetto[4] }}" required style="margin-bottom: 10px; padding: 10px;">
+        <input type="text" name="gang" value="{{ soggetto[5] }}" required style="margin-bottom: 10px; padding: 10px;">
+        <textarea name="reati" style="margin-bottom: 10px; padding: 10px;">{{ soggetto[6] }}</textarea>
+        <button type="submit" style="padding: 10px; background-color: #28a745; color: white;">Salva Modifiche</button>
+    </form>
+</div>
+{% endblock %}

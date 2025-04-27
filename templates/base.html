@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Database Antigang{% endblock %}</title>
+   <!-- Menu Profilo Utente -->
+<div style="position: absolute; top: 20px; right: 60px;">
+    <div style="position: relative; display: inline-block;">
+      <button onclick="toggleDropdown()" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center;">
+        <span style="margin-right: 8px;">👤 {{ session['username'] }}</span>
+        <span>▼</span>
+      </button>
+  
+      <div id="dropdownMenu" style="display: none; position: absolute; background-color: white; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); margin-top: 5px; min-width: 180px; z-index: 1;">
+        <a href="/dashboard" style="display: flex; align-items: center; padding: 12px 16px; text-decoration: none; color: black;">
+          <span style="margin-right: 8px;">👤</span> Vai al tuo profilo
+        </a>
+        <a href="/logout" style="display: flex; align-items: center; padding: 12px 16px; text-decoration: none; color: black;">
+          <span style="margin-right: 8px;">🚪</span> Logout
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+  function toggleDropdown() {
+    var menu = document.getElementById("dropdownMenu");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+  }
+  </script>
+  
+
+    
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #343a40;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .content {
+            margin-left: 200px;
+            padding: 20px;
+            width: calc(100% - 200px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+      <a href="/dashboard">🏠 | Home</a>
+        <a href="/search">🔎 | Ricerca Soggetti</a>
+        <a href="/add">➕ | Aggiungi Profilo</a>
+        <a href="/add_vehicle">🛃 | Aggiungi Veicolo</a>
+        <a href="/search_vehicle">🚗 | Cerca Veicolo</a>
+        <a href="/login">🔑 | Login</a>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

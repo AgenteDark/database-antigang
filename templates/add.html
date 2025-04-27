@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Aggiungi Nuovo Soggetto - Database Antigang{% endblock %}
+
+{% block content %}
+
+<div style="padding: 30px; display: flex; flex-direction: column; align-items: center;">
+    <h2>Aggiungi Nuovo Soggetto</h2>
+    <form method="POST" action="/add" enctype="multipart/form-data" style="display: flex; flex-direction: column; width: 400px; margin-top: 20px;">
+        <input type="text" name="nome" placeholder="Nome" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="cognome" placeholder="Cognome" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="date" name="data_nascita" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="citta" placeholder="Città di Residenza" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="telefono" placeholder="Numero di Telefono" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="gang" placeholder="Gang di Appartenenza" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <textarea name="reati" placeholder="Reati" required style="margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"></textarea>
+        <input type="file" name="foto" accept=".png,.jpg,.jpeg" style="margin-bottom: 20px;">
+        <button type="submit" style="padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px;">Salva Profilo</button>
+    </form>
+</div>
+{% endblock %}

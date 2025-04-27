@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Errore di Accesso</title>
+    <style>
+        body {
+            background-color: #ffdddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .error-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .error-container h1 {
+            color: #e60000;
+            margin-bottom: 20px;
+        }
+        .error-container a {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #e60000;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .error-container a:hover {
+            background-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1>Accesso Negato</h1>
+        <p>Username o Password errati.</p>
+        <a href="/login">Riprova</a>
+    </div>
+</body>
+</html>

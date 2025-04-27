@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Profilo Soggetto - Criminal Investigation Division</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #ffffff;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header img {
+            width: 120px;
+            height: 120px;
+        }
+        .header h1 {
+            margin-top: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .card {
+            border: 2px solid #333;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .photo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .photo img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #555;
+        }
+        .info {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .info strong {
+            width: 180px;
+            display: inline-block;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
+    <h1>Criminal Investigation Division</h1>
+</div>
+
+<div class="card">
+    <div class="title">Scheda Profilo</div>
+
+    <div class="photo">
+        {% if soggetto[7] %}
+            <img src="{{ url_for('static', filename='uploads/' + soggetto[7]) }}" alt="Foto Soggetto">
+        {% else %}
+            <div style="width:150px; height:150px; background:#ccc; line-height:150px; text-align:center; border-radius:10px;">No Foto</div>
+        {% endif %}
+    </div>
+
+    <div class="info"><strong>Nome:</strong> {{ soggetto[0] }}</div>
+    <div class="info"><strong>Cognome:</strong> {{ soggetto[1] }}</div>
+    <div class="info"><strong>Data di Nascita:</strong> {{ soggetto[2] }}</div>
+    <div class="info"><strong>Città di Residenza:</strong> {{ soggetto[3] }}</div>
+    <div class="info"><strong>Telefono:</strong> {{ soggetto[4] }}</div>
+    <div class="info"><strong>Gang di Appartenenza:</strong> {{ soggetto[5] }}</div>
+    <div class="info"><strong>Reati:</strong> {{ soggetto[6] }}</div>
+    <div class="info"><strong>Data di Registrazione:</strong> {{ soggetto[8] }}</div>
+
+    <div class="footer">
+        Database Antigang - Documento generato automaticamente
+    </div>
+</div>
+
+</body>
+</html>

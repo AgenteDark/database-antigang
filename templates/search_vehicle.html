@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Ricerca Veicoli - Database Antigang{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
+    <h2>Ricerca Veicoli</h2>
+    <form method="GET" action="/search_vehicle" style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+        <input type="text" name="proprietario" placeholder="Proprietario" value="{{ proprietario }}" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="modello" placeholder="Modello" value="{{ modello }}" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="targa" placeholder="Targa" value="{{ targa }}" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="note" placeholder="Note" value="{{ note }}" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+        <button type="submit" style="padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px;">Cerca</button>
+    </form>
+
+    {% if risultati %}
+        <div style="margin-top: 20px; width: 100%; max-width: 1200px;">
+            <table style="width: 100%; border-collapse: collapse; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+                <thead>
+                    <tr style="background-color: #007bff; color: white; text-align: center;">
+                        <th style="padding: 12px;">Proprietario</th>
+                        <th style="padding: 12px;">Modello</th>
+                        <th style="padding: 12px;">Targa</th>
+                        <th style="padding: 12px;">Note</th>
+                        <th style="padding: 12px;">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for id, proprietario, modello, targa, note in risultati %}
+                    <tr style="text-align: center; border-bottom: 1px solid #ddd;">
+                        <td style="padding: 12px;">{{ proprietario }}</td>
+                        <td style="padding: 12px;">{{ modello }}</td>
+                        <td style="padding: 12px;">{{ targa }}</td>
+                        <td style="padding: 12px;">{{ note }}</td>
+                        <td style="padding: 12px;">
+                            <a href="/edit_vehicle/{{ id }}" style="background-color: #ffc107; padding: 8px 12px; border-radius: 5px; text-decoration: none; color: black; margin-right: 8px;">✏️ Modifica</a>
+                            <a href="/delete_vehicle/{{ id }}" onclick="return confirm('Sei sicuro di voler eliminare questo veicolo?');" style="background-color: #dc3545; padding: 8px 12px; border-radius: 5px; text-decoration: none; color: white;">❌ Elimina</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% elif proprietario or modello or targa or note %}
+        <p style="margin-top: 20px;">Nessun veicolo trovato per la ricerca effettuata.</p>
+    {% endif %}
+</div>
+{% endblock %}

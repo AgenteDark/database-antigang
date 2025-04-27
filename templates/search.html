@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Ricerca Soggetti - Database Antigang{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
+    <h2>Ricerca Soggetti</h2>
+
+    <!-- Form filtri avanzati -->
+    <form method="GET" action="/search" style="margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+        <input type="text" name="nome" placeholder="Nome" style="padding: 10px; width: 200px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="cognome" placeholder="Cognome" style="padding: 10px; width: 200px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="citta" placeholder="Città" style="padding: 10px; width: 200px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="gang" placeholder="Gang" style="padding: 10px; width: 200px; border-radius: 5px; border: 1px solid #ccc;">
+        <input type="text" name="reati" placeholder="Reati" style="padding: 10px; width: 200px; border-radius: 5px; border: 1px solid #ccc;">
+        <button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px;">Cerca</button>
+    </form>
+
+    <!-- Risultati ricerca -->
+    {% if risultati %}
+    <div style="margin-top: 20px; width: 100%;">
+        <table style="width: 100%; max-width: 1200px; margin: auto; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #007bff; color: white;">
+                    <th>Foto</th>
+                    <th>Nome</th>
+                    <th>Cognome</th>
+                    <th>Data di Nascita</th>
+                    <th>Città</th>
+                    <th>Telefono</th>
+                    <th>Gang</th>
+                    <th>Reati</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for id, nome, cognome, data_nascita, citta, telefono, gang, reati, immagine in risultati %}
+                <tr style="text-align: center;">
+                    <td>
+                        {% if immagine %}
+                        <a href="/profile/{{ id }}">
+                            <img src="{{ url_for('static', filename='uploads/' + immagine) }}" alt="Foto" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                        </a>
+                        {% else %}
+                        Nessuna foto
+                        {% endif %}
+                    </td>
+                    <td><a href="/profile/{{ id }}" style="text-decoration: none; color: inherit;">{{ nome }}</a></td>
+                    <td>{{ cognome }}</td>
+                    <td>{{ data_nascita }}</td>
+                    <td>{{ citta }}</td>
+                    <td>{{ telefono }}</td>
+                    <td>{{ gang }}</td>
+                    <td>{{ reati }}</td>
+                    <td>
+                        <a href="/edit/{{ id }}" style="background-color: #ffc107; padding: 5px 10px; border-radius: 5px; text-decoration: none; color: black;">✏️ Modifica</a>
+                        <a href="/delete/{{ id }}" onclick="return confirm('Sei sicuro di voler eliminare questo soggetto?');" 
+                           style="background-color: #dc3545; padding: 5px 10px; border-radius: 5px; text-decoration: none; color: white; margin-left: 5px;">❌ Elimina</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% elif richiesta_ricerca %}
+        <p style="margin-top: 20px;">Nessun risultato trovato.</p>
+    {% endif %}
+</div>
+{% endblock %}
