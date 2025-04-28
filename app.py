@@ -1,31 +1,32 @@
-# app.py aggiornato per PostgreSQL corretto
-from flask import Flask, render_template, request, redirect, url_for, session, make_response
+# app.py
+from flask import Flask, render_template, request, redirect, url_for, session
 import psycopg2
 import os
+from urllib.parse import urlparse
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-import pdfkit
 from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'supersegreto123'
 
-# Configurazione PostgreSQL
-DB_HOST = 'dpg-d07laqbuibrs73fjibg0-a.eu-central-1.postgres.render.com'
-DB_NAME = 'antigang'
-DB_USER = 'admin'
-DB_PASS = 'yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU'
-
+# Configurazione connessione PostgreSQL da DATABASE_URL
 def create_connection():
+    db_url = os.getenv("DATABASE_URL")
+    if db_url is None:
+        raise Exception("DATABASE_URL non impostato!")
+    result = urlparse(db_url)
+
     return psycopg2.connect(
-        host=DB_HOST,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS,
-        port=5432
+        host=result.hostname,
+        database=result.path[1:],  # Tolgo il primo /
+        user=result.username,
+        password=result.password,
+        port=result.port
     )
 
+# Cartella upload immagini
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
