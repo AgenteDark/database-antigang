@@ -19,10 +19,10 @@ DB_PASS = 'yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU'
 
 def create_connection():
     return psycopg2.connect(
-        host=dpg-d07laqbuibrs73fjibg0-a,
-        database=antigang,
-        user=admin,
-        password=yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU
+        host= "dpg-d07laqbuibrs73fjibg0-a",
+        database= "antigang",
+        user= "admin",
+        password= "yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU"
         port=5432
     )
 
