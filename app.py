@@ -12,10 +12,10 @@ app = Flask(__name__)
 app.secret_key = 'supersegreto123'
 
 # Configurazione PostgreSQL
-DB_HOST = 'HOST_DEL_DATABASE'
-DB_NAME = 'NOME_DEL_DATABASE'
-DB_USER = 'USERNAME_DEL_DATABASE'
-DB_PASS = 'PASSWORD_DEL_DATABASE'
+DB_HOST = 'dpg-d07laqbuibrs73fjibg0-a'
+DB_NAME = 'antigang'
+DB_USER = 'admin'
+DB_PASS = 'yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU'
 
 def create_connection():
     return psycopg2.connect(
