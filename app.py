@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+# app.py aggiornato
+from flask import Flask, render_template, request, redirect, url_for, session, make_response
 import sqlite3
 import os
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+import pdfkit
 from functools import wraps
 
 app = Flask(__name__)
@@ -30,27 +32,9 @@ def login_required(f):
 def create_tables():
     conn = sqlite3.connect('database.db')
     c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS utenti (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password TEXT,
-            data_registrazione TEXT
-        )
-    ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS soggetti (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT, cognome TEXT, data_nascita TEXT,
-            citta TEXT, telefono TEXT, gang TEXT, reati TEXT, immagine TEXT, data_registrazione TEXT
-        )
-    ''')
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS veicoli (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            proprietario TEXT, modello TEXT, targa TEXT, note TEXT
-        )
-    ''')
+    c.execute('''CREATE TABLE IF NOT EXISTS utenti (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE, password TEXT, data_registrazione TEXT)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS soggetti (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, cognome TEXT, data_nascita TEXT, citta TEXT, telefono TEXT, gang TEXT, reati TEXT, immagine TEXT, data_registrazione TEXT)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS veicoli (id INTEGER PRIMARY KEY AUTOINCREMENT, proprietario TEXT, modello TEXT, targa TEXT, note TEXT)''')
     conn.commit()
     conn.close()
 
@@ -98,8 +82,7 @@ def register():
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
         try:
-            c.execute('INSERT INTO utenti (username, password, data_registrazione) VALUES (?, ?, ?)', 
-                      (username, hashed_password, data_registrazione))
+            c.execute('INSERT INTO utenti (username, password, data_registrazione) VALUES (?, ?, ?)', (username, hashed_password, data_registrazione))
             conn.commit()
         except sqlite3.IntegrityError:
             conn.close()
@@ -120,6 +103,7 @@ def dashboard():
     conn.close()
     return render_template('dashboard.html', totale_soggetti=totale_soggetti)
 
+# 🔥 Ricerca soggetti con FILTRI AVANZATI
 @app.route('/search', methods=['GET'])
 @login_required
 def search():
@@ -160,6 +144,7 @@ def search():
 
     return render_template('search.html', risultati=risultati, richiesta_ricerca=richiesta_ricerca)
 
+# 🔥 Aggiungi nuovo soggetto
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
@@ -173,8 +158,8 @@ def add():
         reati = request.form['reati']
         data_registrazione = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        foto = request.files.get('foto')
-        filename = None
+        foto = request.files['foto']
+        filename = ''
 
         if foto and foto.filename != '':
             if allowed_file(foto.filename):
@@ -198,38 +183,41 @@ def add():
 
     return render_template('add.html')
 
-# 🔥 Visualizza il profilo di un soggetto
-@app.route('/profile/<int:id>')
-@login_required
-def profile(id):
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute('SELECT nome, cognome, data_nascita, citta, telefono, gang, reati, immagine, data_registrazione FROM soggetti WHERE id = ?', (id,))
-    soggetto = c.fetchone()
-    conn.close()
-
-    if soggetto:
-        return render_template('profile.html', soggetto=soggetto)
-    else:
-        return "Profilo non trovato.", 404
-    
-    # 🔍 RICERCA VEICOLO
-@app.route('/search_vehicle', methods=['GET', 'POST'])
+# 🔥 Ricerca veicoli
+@app.route('/search_vehicle', methods=['GET'])
 @login_required
 def search_vehicle():
-    results = []
-    if request.method == 'POST':
-        targa = request.form['targa']
+    proprietario = request.args.get('proprietario', '')
+    modello = request.args.get('modello', '')
+    targa = request.args.get('targa', '')
+    note = request.args.get('note', '')
+    risultati = []
 
-        conn = sqlite3.connect('database.db')
-        c = conn.cursor()
-        c.execute('SELECT proprietario, modello, targa, note FROM veicoli WHERE targa LIKE ?', ('%' + targa + '%',))
-        results = c.fetchall()
-        conn.close()
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    query = "SELECT id, proprietario, modello, targa, note FROM veicoli WHERE 1=1"
+    params = []
 
-    return render_template('search_vehicle.html', results=results)
+    if proprietario:
+        query += " AND proprietario LIKE ?"
+        params.append(f"%{proprietario}%")
+    if modello:
+        query += " AND modello LIKE ?"
+        params.append(f"%{modello}%")
+    if targa:
+        query += " AND targa LIKE ?"
+        params.append(f"%{targa}%")
+    if note:
+        query += " AND note LIKE ?"
+        params.append(f"%{note}%")
 
-# ➕ AGGIUNGI VEICOLO
+    c.execute(query, params)
+    risultati = c.fetchall()
+    conn.close()
+
+    return render_template('search_vehicle.html', risultati=risultati, proprietario=proprietario, modello=modello, targa=targa, note=note)
+
+# 🔥 Aggiungi veicolo
 @app.route('/add_vehicle', methods=['GET', 'POST'])
 @login_required
 def add_vehicle():
@@ -241,16 +229,56 @@ def add_vehicle():
 
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
-        c.execute('INSERT INTO veicoli (proprietario, modello, targa, note) VALUES (?, ?, ?, ?)', 
-                  (proprietario, modello, targa, note))
+        c.execute('INSERT INTO veicoli (proprietario, modello, targa, note) VALUES (?, ?, ?, ?)', (proprietario, modello, targa, note))
         conn.commit()
         conn.close()
 
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('search_vehicle'))
 
     return render_template('add_vehicle.html')
 
+# 🔥 Modifica veicolo
+@app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_vehicle(id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        proprietario = request.form['proprietario']
+        modello = request.form['modello']
+        targa = request.form['targa']
+        note = request.form['note']
+
+        c.execute('''
+            UPDATE veicoli
+            SET proprietario=?, modello=?, targa=?, note=?
+            WHERE id=?
+        ''', (proprietario, modello, targa, note, id))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('search_vehicle'))
+
+    c.execute('SELECT proprietario, modello, targa, note FROM veicoli WHERE id=?', (id,))
+    veicolo = c.fetchone()
+    conn.close()
+
+    if veicolo:
+        return render_template('edit_vehicle.html', veicolo=veicolo, id=id)
+    else:
+        return "Veicolo non trovato.", 404
+
+# 🔥 Elimina veicolo
+@app.route('/delete_vehicle/<int:id>')
+@login_required
+def delete_vehicle(id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM veicoli WHERE id=?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('search_vehicle'))
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True)
