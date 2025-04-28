@@ -1,4 +1,4 @@
-# app.py aggiornato per PostgreSQL
+# app.py aggiornato per PostgreSQL corretto
 from flask import Flask, render_template, request, redirect, url_for, session, make_response
 import psycopg2
 import os
@@ -12,21 +12,19 @@ app = Flask(__name__)
 app.secret_key = 'supersegreto123'
 
 # Configurazione PostgreSQL
-DB_HOST = 'dpg-d07laqbuibrs73fjibg0-a.eu-central-1.postgres.render.com'
+DB_HOST = 'dpg-d07laqbuibrs73fjibg0-a'
 DB_NAME = 'antigang'
 DB_USER = 'admin'
 DB_PASS = 'yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU'
 
-
 def create_connection():
     return psycopg2.connect(
-        host="dpg-d07laqbuibrs73fjibg0-a.eu-central-1.postgres.render.com",
-        database="antigang",
-        user="admin",
-        password="yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU",
+        host=DB_HOST,
+        database=DB_NAME,
+        user=DB_USER,
+        password=DB_PASS,
         port=5432
     )
-
 
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
