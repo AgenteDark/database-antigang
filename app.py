@@ -280,6 +280,22 @@ def delete_vehicle(id):
     conn.close()
     return redirect(url_for('search_vehicle'))
 
+# 🔥 Visualizza il profilo di un soggetto
+@app.route('/profile/<int:id>')
+@login_required
+def profile(id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT nome, cognome, data_nascita, citta, telefono, gang, reati, immagine, data_registrazione FROM soggetti WHERE id = ?', (id,))
+    soggetto = c.fetchone()
+    conn.close()
+
+    if soggetto:
+        return render_template('profile.html', soggetto=soggetto)
+    else:
+        return "Profilo non trovato.", 404
+
+
 import os
 
 if __name__ == '__main__':
