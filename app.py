@@ -19,10 +19,10 @@ DB_PASS = 'yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU'
 
 def create_connection():
     return psycopg2.connect(
-        host=DB_HOST,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS
+        host=dpg-d07laqbuibrs73fjibg0-a,
+        database=antigang,
+        user=admin,
+        password=yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU
     )
 
 UPLOAD_FOLDER = 'static/uploads'
