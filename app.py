@@ -293,7 +293,7 @@ def profile(id):
         return "Profilo non trovato.", 404
     
     # Modifica soggetto
-@app.route('/edit_profile/<int:id>', methods=['GET', 'POST'])
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_profile(id):
     conn = create_connection()
@@ -322,7 +322,7 @@ def edit_profile(id):
     conn.close()
 
     if soggetto:
-        return render_template('edit_profile.html', soggetto=soggetto, id=id)
+        return render_template('edit.html', soggetto=soggetto, id=id)
     else:
         return "Profilo non trovato.", 404
 
