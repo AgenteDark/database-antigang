@@ -212,6 +212,44 @@ def profile(id):
         return render_template('profile.html', soggetto=soggetto)
     else:
         return "Profilo non trovato.", 404
+    
+    # 🔍 RICERCA VEICOLO
+@app.route('/search_vehicle', methods=['GET', 'POST'])
+@login_required
+def search_vehicle():
+    results = []
+    if request.method == 'POST':
+        targa = request.form['targa']
+
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute('SELECT proprietario, modello, targa, note FROM veicoli WHERE targa LIKE ?', ('%' + targa + '%',))
+        results = c.fetchall()
+        conn.close()
+
+    return render_template('search_vehicle.html', results=results)
+
+# ➕ AGGIUNGI VEICOLO
+@app.route('/add_vehicle', methods=['GET', 'POST'])
+@login_required
+def add_vehicle():
+    if request.method == 'POST':
+        proprietario = request.form['proprietario']
+        modello = request.form['modello']
+        targa = request.form['targa']
+        note = request.form['note']
+
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute('INSERT INTO veicoli (proprietario, modello, targa, note) VALUES (?, ?, ?, ?)', 
+                  (proprietario, modello, targa, note))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for('dashboard'))
+
+    return render_template('add_vehicle.html')
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
