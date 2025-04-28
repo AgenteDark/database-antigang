@@ -120,21 +120,45 @@ def dashboard():
     conn.close()
     return render_template('dashboard.html', totale_soggetti=totale_soggetti)
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET'])
 @login_required
 def search():
-    results = []
-    if request.method == 'POST':
-        search_query = request.form['search_query']
+    nome = request.args.get('nome', '')
+    cognome = request.args.get('cognome', '')
+    citta = request.args.get('citta', '')
+    gang = request.args.get('gang', '')
+    reati = request.args.get('reati', '')
+    risultati = []
 
-        conn = sqlite3.connect('database.db')
-        c = conn.cursor()
-        c.execute("SELECT * FROM soggetti WHERE nome LIKE ? OR cognome LIKE ? OR gang LIKE ?", 
-                  (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%'))
-        results = c.fetchall()
-        conn.close()
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
 
-    return render_template('search.html', results=results)
+    query = "SELECT id, nome, cognome, data_nascita, citta, telefono, gang, reati, immagine FROM soggetti WHERE 1=1"
+    params = []
+
+    if nome:
+        query += " AND nome LIKE ?"
+        params.append(f"%{nome}%")
+    if cognome:
+        query += " AND cognome LIKE ?"
+        params.append(f"%{cognome}%")
+    if citta:
+        query += " AND citta LIKE ?"
+        params.append(f"%{citta}%")
+    if gang:
+        query += " AND gang LIKE ?"
+        params.append(f"%{gang}%")
+    if reati:
+        query += " AND reati LIKE ?"
+        params.append(f"%{reati}%")
+
+    c.execute(query, params)
+    risultati = c.fetchall()
+    conn.close()
+
+    richiesta_ricerca = any([nome, cognome, citta, gang, reati])
+
+    return render_template('search.html', risultati=risultati, richiesta_ricerca=richiesta_ricerca)
 
 @app.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -149,8 +173,8 @@ def add():
         reati = request.form['reati']
         data_registrazione = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        foto = request.files['foto']
-        filename = ''
+        foto = request.files.get('foto')
+        filename = None
 
         if foto and foto.filename != '':
             if allowed_file(foto.filename):
@@ -161,109 +185,18 @@ def add():
 
         conn = sqlite3.connect('database.db')
         c = conn.cursor()
+
         c.execute('''
             INSERT INTO soggetti (nome, cognome, data_nascita, citta, telefono, gang, reati, immagine, data_registrazione)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (nome, cognome, data_nascita, citta, telefono, gang, reati, filename, data_registrazione))
+
         conn.commit()
         conn.close()
 
         return redirect(url_for('search'))
 
     return render_template('add.html')
-
-@app.route('/search_vehicle', methods=['GET'])
-@login_required
-def search_vehicle():
-    proprietario = request.args.get('proprietario', '')
-    modello = request.args.get('modello', '')
-    targa = request.args.get('targa', '')
-    note = request.args.get('note', '')
-    risultati = []
-
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    query = "SELECT id, proprietario, modello, targa, note FROM veicoli WHERE 1=1"
-    params = []
-
-    if proprietario:
-        query += " AND proprietario LIKE ?"
-        params.append(f"%{proprietario}%")
-    if modello:
-        query += " AND modello LIKE ?"
-        params.append(f"%{modello}%")
-    if targa:
-        query += " AND targa LIKE ?"
-        params.append(f"%{targa}%")
-    if note:
-        query += " AND note LIKE ?"
-        params.append(f"%{note}%")
-
-    c.execute(query, params)
-    risultati = c.fetchall()
-    conn.close()
-
-    return render_template('search_vehicle.html', risultati=risultati, proprietario=proprietario, modello=modello, targa=targa, note=note)
-
-@app.route('/add_vehicle', methods=['GET', 'POST'])
-@login_required
-def add_vehicle():
-    if request.method == 'POST':
-        proprietario = request.form['proprietario']
-        modello = request.form['modello']
-        targa = request.form['targa']
-        note = request.form['note']
-
-        conn = sqlite3.connect('database.db')
-        c = conn.cursor()
-        c.execute('INSERT INTO veicoli (proprietario, modello, targa, note) VALUES (?, ?, ?, ?)', (proprietario, modello, targa, note))
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for('search_vehicle'))
-
-    return render_template('add_vehicle.html')
-
-@app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_vehicle(id):
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-
-    if request.method == 'POST':
-        proprietario = request.form['proprietario']
-        modello = request.form['modello']
-        targa = request.form['targa']
-        note = request.form['note']
-
-        c.execute('''
-            UPDATE veicoli
-            SET proprietario=?, modello=?, targa=?, note=?
-            WHERE id=?
-        ''', (proprietario, modello, targa, note, id))
-        conn.commit()
-        conn.close()
-
-        return redirect(url_for('search_vehicle'))
-
-    c.execute('SELECT proprietario, modello, targa, note FROM veicoli WHERE id=?', (id,))
-    veicolo = c.fetchone()
-    conn.close()
-
-    if veicolo:
-        return render_template('edit_vehicle.html', veicolo=veicolo, id=id)
-    else:
-        return "Veicolo non trovato.", 404
-
-@app.route('/delete_vehicle/<int:id>')
-@login_required
-def delete_vehicle(id):
-    conn = sqlite3.connect('database.db')
-    c = conn.cursor()
-    c.execute('DELETE FROM veicoli WHERE id=?', (id,))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('search_vehicle'))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
