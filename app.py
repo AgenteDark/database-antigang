@@ -23,6 +23,7 @@ def create_connection():
         database=antigang,
         user=admin,
         password=yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU
+        port=5432
     )
 
 UPLOAD_FOLDER = 'static/uploads'
