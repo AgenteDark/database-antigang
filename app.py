@@ -291,6 +291,72 @@ def profile(id):
         return render_template('profile.html', soggetto=soggetto)
     else:
         return "Profilo non trovato.", 404
+    
+    # Modifica soggetto
+@app.route('/edit_profile/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_profile(id):
+    conn = create_connection()
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        nome = request.form['nome']
+        cognome = request.form['cognome']
+        data_nascita = request.form['data_nascita']
+        citta = request.form['citta']
+        telefono = request.form['telefono']
+        gang = request.form['gang']
+        reati = request.form['reati']
+
+        c.execute('''
+            UPDATE soggetti
+            SET nome=%s, cognome=%s, data_nascita=%s, citta=%s, telefono=%s, gang=%s, reati=%s
+            WHERE id=%s
+        ''', (nome, cognome, data_nascita, citta, telefono, gang, reati, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('profile', id=id))
+
+    c.execute('SELECT nome, cognome, data_nascita, citta, telefono, gang, reati FROM soggetti WHERE id = %s', (id,))
+    soggetto = c.fetchone()
+    conn.close()
+
+    if soggetto:
+        return render_template('edit_profile.html', soggetto=soggetto, id=id)
+    else:
+        return "Profilo non trovato.", 404
+
+# Modifica veicolo
+@app.route('/edit_vehicle/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_vehicle(id):
+    conn = create_connection()
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        proprietario = request.form['proprietario']
+        modello = request.form['modello']
+        targa = request.form['targa']
+        note = request.form['note']
+
+        c.execute('''
+            UPDATE veicoli
+            SET proprietario=%s, modello=%s, targa=%s, note=%s
+            WHERE id=%s
+        ''', (proprietario, modello, targa, note, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('search_vehicle'))
+
+    c.execute('SELECT proprietario, modello, targa, note FROM veicoli WHERE id = %s', (id,))
+    veicolo = c.fetchone()
+    conn.close()
+
+    if veicolo:
+        return render_template('edit_vehicle.html', veicolo=veicolo, id=id)
+    else:
+        return "Veicolo non trovato.", 404
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
