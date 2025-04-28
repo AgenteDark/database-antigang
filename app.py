@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = 'supersegreto123'
 
 # Configurazione PostgreSQL
-DB_HOST = 'dpg-d07laqbuibrs73fjibg0-a'
+DB_HOST = 'dpg-d07laqbuibrs73fjibg0-a.eu-central-1.postgres.render.com'
 DB_NAME = 'antigang'
 DB_USER = 'admin'
 DB_PASS = 'yDs01xXjRRJOgX4NicB0Qh9kraS0VUmU'
