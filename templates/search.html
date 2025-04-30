@@ -54,8 +54,9 @@
                     <td>{{ reati }}</td>
                     <td>
                         <a href="/edit/{{ id }}" style="background-color: #ffc107; padding: 5px 10px; border-radius: 5px; text-decoration: none; color: black;">✏️ Modifica</a>
-                        <a href="/delete/{{ id }}" onclick="return confirm('Sei sicuro di voler eliminare questo soggetto?');" 
-                           style="background-color: #dc3545; padding: 5px 10px; border-radius: 5px; text-decoration: none; color: white; margin-left: 5px;">❌ Elimina</a>
+                        <form method="POST" action="{{ url_for('delete_soggetto', id=id) }}" style="display:inline;" onsubmit="return confirm('Sei sicuro di voler eliminare questo soggetto?');">
+                            <button type="submit" style="background-color: #dc3545; padding: 5px 10px; border-radius: 5px; color: white; border: none;">❌ Elimina</button>
+                        </form>                        
                     </td>
                 </tr>
                 {% endfor %}

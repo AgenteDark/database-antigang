@@ -356,6 +356,19 @@ def edit_vehicle(id):
         return render_template('edit_vehicle.html', veicolo=veicolo, id=id)
     else:
         return "Veicolo non trovato.", 404
+    
+#elimina soggetto    
+    
+@app.route('/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_soggetto(id):
+    conn = create_connection()
+    c = conn.cursor()
+    c.execute('DELETE FROM soggetti WHERE id = %s', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('search'))
+
 
 
 if __name__ == '__main__':
